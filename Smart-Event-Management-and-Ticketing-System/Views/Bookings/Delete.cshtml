@@ -1,0 +1,68 @@
+@model Smart_Event_Management_and_Ticketing_System.Models.Booking
+@{
+    ViewData["Title"] = "Cancel Booking";
+}
+
+<div class="row mb-4">
+    <div class="col-md-12">
+        <a asp-action="Index" class="btn btn-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Back to My Bookings
+        </a>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow border-danger">
+            <div class="card-header bg-danger text-white">
+                <h3 class="mb-0">
+                    <i class="fas fa-exclamation-triangle me-2"></i>Cancel Booking
+                </h3>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-warning">
+                    <h5>
+                        <i class="fas fa-exclamation-circle me-2"></i>Are you sure you want to cancel this booking?
+                    </h5>
+                    <p class="mb-0">This action cannot be undone.</p>
+                </div>
+
+                <h5>Booking Information:</h5>
+                <dl class="row">
+                    <dt class="col-sm-4">Booking ID:</dt>
+                    <dd class="col-sm-8">#@Model.BookingId</dd>
+
+                    <dt class="col-sm-4">Event:</dt>
+                    <dd class="col-sm-8">@Model.Event?.EventName</dd>
+
+                    <dt class="col-sm-4">Event Date:</dt>
+                    <dd class="col-sm-8">@Model.Event?.EventDate.ToString("MMM dd, yyyy - hh:mm tt")</dd>
+
+                    <dt class="col-sm-4">Venue:</dt>
+                    <dd class="col-sm-8">@Model.Event?.Venue</dd>
+
+                    <dt class="col-sm-4">Seat Type:</dt>
+                    <dd class="col-sm-8"><span class="badge bg-primary">@Model.SeatType</span></dd>
+
+                    <dt class="col-sm-4">Quantity:</dt>
+                    <dd class="col-sm-8">@Model.Quantity ticket(s)</dd>
+
+                    <dt class="col-sm-4">Booking Date:</dt>
+                    <dd class="col-sm-8">@Model.BookingDate.ToString("MMM dd, yyyy")</dd>
+                </dl>
+
+                <form asp-action="Delete" method="post">
+                    <input type="hidden" asp-for="BookingId" />
+                    <div class="d-grid gap-2 mt-4">
+                        <button type="submit" class="btn btn-danger btn-lg">
+                            <i class="fas fa-trash-alt me-2"></i>Yes, Cancel This Booking
+                        </button>
+                        <a asp-action="Index" class="btn btn-secondary btn-lg">
+                            <i class="fas fa-times me-2"></i>No, Keep This Booking
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,85 @@
+@model Smart_Event_Management_and_Ticketing_System.Models.Review
+@{
+    ViewData["Title"] = "Write a Review";
+    var eventItem = ViewBag.Event as Smart_Event_Management_and_Ticketing_System.Models.Event;
+}
+
+<div class="row mb-4">
+    <div class="col-md-12">
+        <a asp-controller="Events" asp-action="Details" asp-route-id="@eventItem.EventId" class="btn btn-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Back to Event
+        </a>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h3 class="mb-0">
+                    <i class="fas fa-star me-2"></i>Write a Review
+                </h3>
+            </div>
+            <div class="card-body">
+                <!-- Event Information -->
+                <div class="alert alert-info">
+                    <h5>
+                        <i class="fas fa-calendar-alt me-2"></i>@eventItem.EventName
+                    </h5>
+                    <p class="mb-0">
+                        <strong>Date:</strong> @eventItem.EventDate.ToString("MMMM dd, yyyy")<br />
+                        <strong>Venue:</strong> @eventItem.Venue
+                    </p>
+                </div>
+
+                <!-- Review Form -->
+                <form asp-action="Create" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                    
+                    <input type="hidden" asp-for="EventId" />
+
+                    <div class="form-group mb-3">
+                        <label asp-for="Rating" class="form-label">
+                            <i class="fas fa-star me-1"></i>Rating (1-5 stars)
+                        </label>
+                        <select asp-for="Rating" class="form-control">
+                            <option value="5">????? Excellent</option>
+                            <option value="4">???? Very Good</option>
+                            <option value="3">??? Good</option>
+                            <option value="2">?? Fair</option>
+                            <option value="1">? Poor</option>
+                        </select>
+                        <span asp-validation-for="Rating" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="Comment" class="form-label">
+                            <i class="fas fa-comment me-1"></i>Your Review
+                        </label>
+                        <textarea asp-for="Comment" class="form-control" rows="6" placeholder="Share your experience about this event..."></textarea>
+                        <span asp-validation-for="Comment" class="text-danger"></span>
+                        <small class="form-text text-muted">Maximum 500 characters</small>
+                    </div>
+
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Your review will help other members make informed decisions about attending events.
+                    </div>
+
+                    <div class="d-grid gap-2 mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-paper-plane me-2"></i>Submit Review
+                        </button>
+                        <a asp-controller="Events" asp-action="Details" asp-route-id="@eventItem.EventId" class="btn btn-secondary btn-lg">
+                            <i class="fas fa-times me-2"></i>Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

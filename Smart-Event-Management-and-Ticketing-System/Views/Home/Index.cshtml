@@ -1,8 +1,149 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model List<Smart_Event_Management_and_Ticketing_System.Models.Event>
+@{
+    ViewData["Title"] = "Home";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<!-- Hero Section -->
+<div class="jumbotron bg-primary text-white p-5 rounded mb-4">
+    <div class="container">
+        <h1 class="display-4">
+            <i class="fas fa-theater-masks me-3"></i>Welcome to Metropolitan Cultural Council
+        </h1>
+        <p class="lead">Discover and experience the finest cultural events in our community</p>
+        <hr class="my-4 bg-white">
+        <p>From music and theater to art exhibitions and dance performances, we bring world-class cultural experiences to you.</p>
+        @if (ViewBag.IsLoggedIn != true)
+        {
+            <a class="btn btn-light btn-lg me-2" asp-controller="Account" asp-action="Register" role="button">
+                <i class="fas fa-user-plus me-2"></i>Register Now
+            </a>
+            <a class="btn btn-outline-light btn-lg" asp-controller="Events" asp-action="Index" role="button">
+                <i class="fas fa-calendar-alt me-2"></i>Browse Events
+            </a>
+        }
+        else
+        {
+            <a class="btn btn-light btn-lg" asp-controller="Events" asp-action="Index" role="button">
+                <i class="fas fa-calendar-alt me-2"></i>Browse All Events
+            </a>
+        }
+    </div>
+</div>
+
+<!-- About Section -->
+<div class="row mb-5">
+    <div class="col-md-12">
+        <h2 class="mb-4">About Us</h2>
+        <p class="lead">
+            The Metropolitan Cultural Council has been enriching our community since 1995. We are dedicated to
+            promoting arts, culture, and creativity through diverse events and programs that celebrate our
+            shared heritage and contemporary artistic expression.
+        </p>
+    </div>
+</div>
+
+<!-- Features Section -->
+<div class="row mb-5">
+    <div class="col-md-4 mb-3">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body text-center">
+                <i class="fas fa-music fa-3x text-primary mb-3"></i>
+                <h5 class="card-title">Diverse Events</h5>
+                <p class="card-text">From classical concerts to contemporary performances, explore a wide variety of cultural events.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body text-center">
+                <i class="fas fa-ticket-alt fa-3x text-primary mb-3"></i>
+                <h5 class="card-title">Easy Booking</h5>
+                <p class="card-text">Register as a member to book tickets online quickly and securely for your favorite events.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body text-center">
+                <i class="fas fa-star fa-3x text-primary mb-3"></i>
+                <h5 class="card-title">Share Reviews</h5>
+                <p class="card-text">Share your experiences and read reviews from other community members about past events.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Upcoming Events Section -->
+<div class="row mb-4">
+    <div class="col-md-12">
+        <h2 class="mb-4">
+            <i class="fas fa-calendar-check me-2"></i>Upcoming Events
+        </h2>
+    </div>
+</div>
+
+@if (Model != null && Model.Any())
+{
+    <div class="row">
+        @foreach (var eventItem in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-star me-2"></i>@eventItem.Category
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">@eventItem.EventName</h5>
+                        <p class="card-text">
+                            <i class="fas fa-calendar me-2"></i>@eventItem.EventDate.ToString("MMM dd, yyyy - hh:mm tt")<br />
+                            <i class="fas fa-map-marker-alt me-2"></i>@eventItem.Venue<br />
+                            <i class="fas fa-dollar-sign me-2"></i>@eventItem.Price.ToString("C")
+                        </p>
+                        @if (ViewBag.IsLoggedIn == true)
+                        {
+                            <span class="badge bg-success">
+                                <i class="fas fa-chair me-1"></i>@eventItem.AvailableSeats seats available
+                            </span>
+                        }
+                        else
+                        {
+                            @if (eventItem.IsFull)
+                            {
+                                <span class="badge bg-danger">
+                                    <i class="fas fa-times-circle me-1"></i>Full
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-success">
+                                    <i class="fas fa-check-circle me-1"></i>Available
+                                </span>
+                            }
+                        }
+                    </div>
+                    <div class="card-footer bg-white">
+                        <a asp-controller="Events" asp-action="Details" asp-route-id="@eventItem.EventId" class="btn btn-primary w-100">
+                            <i class="fas fa-info-circle me-2"></i>View Details
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <div class="alert alert-info">
+        <i class="fas fa-info-circle me-2"></i>No upcoming events at this time. Please check back soon!
+    </div>
+}
+
+<div class="row mt-4">
+    <div class="col-md-12 text-center">
+        <a asp-controller="Events" asp-action="Index" class="btn btn-lg btn-primary">
+            <i class="fas fa-list me-2"></i>View All Events
+        </a>
+    </div>
 </div>

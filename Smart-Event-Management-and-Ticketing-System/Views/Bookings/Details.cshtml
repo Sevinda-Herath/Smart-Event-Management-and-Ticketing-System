@@ -1,0 +1,101 @@
+@model Smart_Event_Management_and_Ticketing_System.Models.Booking
+@{
+    ViewData["Title"] = "Booking Details";
+}
+
+<div class="row mb-4">
+    <div class="col-md-12">
+        <a asp-action="Index" class="btn btn-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Back to My Bookings
+        </a>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-header bg-success text-white">
+                <h3 class="mb-0">
+                    <i class="fas fa-ticket-alt me-2"></i>Booking Details
+                </h3>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <p>
+                            <strong><i class="fas fa-hashtag me-2 text-primary"></i>Booking ID:</strong><br />
+                            #@Model.BookingId
+                        </p>
+                    </div>
+                    <div class="col-md-6">
+                        <p>
+                            <strong><i class="fas fa-clock me-2 text-primary"></i>Booking Date:</strong><br />
+                            @Model.BookingDate.ToString("dddd, MMMM dd, yyyy")
+                        </p>
+                    </div>
+                </div>
+
+                <hr />
+
+                <h5>
+                    <i class="fas fa-calendar-alt me-2"></i>Event Information
+                </h5>
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <p>
+                            <strong>Event Name:</strong><br />
+                            @Model.Event?.EventName
+                        </p>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <p>
+                            <strong><i class="fas fa-calendar me-2"></i>Event Date:</strong><br />
+                            @Model.Event?.EventDate.ToString("dddd, MMMM dd, yyyy")<br />
+                            @Model.Event?.EventDate.ToString("hh:mm tt")
+                        </p>
+                    </div>
+                    <div class="col-md-6">
+                        <p>
+                            <strong><i class="fas fa-map-marker-alt me-2"></i>Venue:</strong><br />
+                            @Model.Event?.Venue
+                        </p>
+                    </div>
+                </div>
+
+                <hr />
+
+                <h5>
+                    <i class="fas fa-info-circle me-2"></i>Booking Information
+                </h5>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <p>
+                            <strong><i class="fas fa-chair me-2"></i>Seat Type:</strong><br />
+                            <span class="badge bg-primary fs-6">@Model.SeatType</span>
+                        </p>
+                    </div>
+                    <div class="col-md-6">
+                        <p>
+                            <strong><i class="fas fa-users me-2"></i>Number of Tickets:</strong><br />
+                            <span class="badge bg-success fs-6">@Model.Quantity</span>
+                        </p>
+                    </div>
+                </div>
+
+                <hr />
+
+                <div class="d-grid gap-2">
+                    <a asp-controller="Events" asp-action="Details" asp-route-id="@Model.EventId" class="btn btn-primary btn-lg">
+                        <i class="fas fa-eye me-2"></i>View Event Details
+                    </a>
+                    <a asp-action="Delete" asp-route-id="@Model.BookingId" class="btn btn-danger btn-lg">
+                        <i class="fas fa-trash-alt me-2"></i>Cancel This Booking
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
