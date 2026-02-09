@@ -34,6 +34,7 @@ namespace Smart_Event_Management_and_Ticketing_System.Controllers
             // Pass member info to view for conditional display
             ViewBag.IsLoggedIn = SessionHelper.IsLoggedIn(HttpContext.Session);
             ViewBag.MemberName = SessionHelper.GetMemberName(HttpContext.Session);
+            ViewBag.IsAdmin = SessionHelper.IsAdmin(HttpContext.Session);
 
             return View(upcomingEvents);
         }
@@ -45,6 +46,7 @@ namespace Smart_Event_Management_and_Ticketing_System.Controllers
         {
             ViewBag.IsLoggedIn = SessionHelper.IsLoggedIn(HttpContext.Session);
             ViewBag.MemberName = SessionHelper.GetMemberName(HttpContext.Session);
+            ViewBag.IsAdmin = SessionHelper.IsAdmin(HttpContext.Session);
             return View();
         }
 

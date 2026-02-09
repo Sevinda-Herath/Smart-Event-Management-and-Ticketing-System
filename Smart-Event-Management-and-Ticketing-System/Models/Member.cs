@@ -25,9 +25,13 @@ namespace Smart_Event_Management_and_Ticketing_System.Models
         [DataType(DataType.Password)]
         public string Password { get; set; }
 
-        [StringLength(50)]
+    [StringLength(50)]
         [Display(Name = "Preferred Category")]
         public string? PreferredCategory { get; set; }
+
+        [Required]
+        [StringLength(20)]
+        public string Role { get; set; } = "Member"; // Default role is "Member", can be "Admin"
 
         // Navigation properties
         public ICollection<Booking>? Bookings { get; set; }

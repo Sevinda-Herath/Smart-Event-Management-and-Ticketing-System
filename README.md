@@ -12,6 +12,7 @@ The **Smart Event Management and Ticketing System** is a web application designe
 
 - **Guests** to browse events (limited information), view reviews, and send inquiries
 - **Members** to register, login, browse events (full details), book tickets, and submit reviews
+- **Admins** to manage events, view all bookings with member details, and view inquiries
 
 ---
 
@@ -35,6 +36,26 @@ The **Smart Event Management and Ticketing System** is a web application designe
 ? Submit reviews for attended events (Rating 1-5 + Comment)  
 ? Edit submitted reviews  
 
+### For Admins (Administrative Users)
+? Admin dashboard with system statistics  
+? Create new events with full details  
+? Edit existing events  
+? Delete events (with associated bookings and reviews)  
+? View all bookings with member details (name and email)  
+? Filter bookings by event or member  
+? View all inquiries/contact messages  
+? View all registered members with activity counts  
+
+---
+
+## Default Credentials
+
+### Admin User
+**Email:** admin@culturalcouncil.org  
+**Password:** admin123
+
+Login as admin to access the admin dashboard and management features.
+
 ---
 
 ## Setup Instructions
@@ -57,6 +78,7 @@ The **Smart Event Management and Ticketing System** is a web application designe
 3. **Database is Already Created!**
    - The database migration has already been applied
    - Sample event data is seeded
+   - Admin user is created
 
 4. **Run the Application**
    - Press `F5` in Visual Studio or run:
@@ -66,6 +88,34 @@ The **Smart Event Management and Ticketing System** is a web application designe
 
 5. **Access the Application**
    - Open browser: `https://localhost:5001` or the URL shown in console
+
+---
+
+## How to Use
+
+### As a Guest (Not Logged In)
+1. Browse events from the home page (limited information)
+2. View event details and reviews
+3. Send inquiries via "Contact Us"
+4. Register to become a member
+
+### As a Member (Logged In)
+1. Click "Register" and create an account
+2. Login with your credentials
+3. Browse events with full details and pricing
+4. Book tickets for any available event
+5. View and manage your bookings under "My Bookings"
+6. Submit reviews for events you've attended
+
+### As an Admin
+1. Login with admin credentials: **admin@culturalcouncil.org** / **admin123**
+2. Access the Admin Dashboard
+3. **Manage Events:** Create, edit, or delete events
+4. **View All Bookings:** See bookings with member names and emails
+5. **View Inquiries:** Read all contact form submissions
+6. **View Members:** See all registered users and their activity
+
+?? **For detailed admin instructions, see [ADMIN_GUIDE.md](ADMIN_GUIDE.md)**
 
 ---
 

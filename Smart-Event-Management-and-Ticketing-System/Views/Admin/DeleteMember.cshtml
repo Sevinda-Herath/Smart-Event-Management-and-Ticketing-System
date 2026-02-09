@@ -1,0 +1,102 @@
+@model Smart_Event_Management_and_Ticketing_System.Models.Member
+@{
+    ViewData["Title"] = "Delete Member";
+}
+
+<div class="row mb-4">
+    <div class="col-md-12">
+        <a asp-action="Members" class="btn btn-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Back to Members
+        </a>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow border-danger">
+            <div class="card-header bg-danger text-white">
+                <h3 class="mb-0">
+                    <i class="fas fa-exclamation-triangle me-2"></i>Delete Member
+                </h3>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-danger">
+                    <h5>
+                        <i class="fas fa-exclamation-circle me-2"></i>Are you sure you want to delete this member?
+                    </h5>
+                    <p class="mb-0">
+                        This action will permanently delete the member's account along with all their bookings and reviews. 
+                        This action <strong>cannot be undone</strong>.
+                    </p>
+                </div>
+
+                <h5>Member Information:</h5>
+                <dl class="row">
+                    <dt class="col-sm-4">Member ID:</dt>
+                    <dd class="col-sm-8">@Model.MemberId</dd>
+
+                    <dt class="col-sm-4">Full Name:</dt>
+                    <dd class="col-sm-8"><strong>@Model.FullName</strong></dd>
+
+                    <dt class="col-sm-4">Email:</dt>
+                    <dd class="col-sm-8">@Model.Email</dd>
+
+                    <dt class="col-sm-4">Preferred Category:</dt>
+                    <dd class="col-sm-8">
+                        @if (!string.IsNullOrEmpty(Model.PreferredCategory))
+                        {
+                            <span class="badge bg-primary">@Model.PreferredCategory</span>
+                        }
+                        else
+                        {
+                            <span class="text-muted">None</span>
+                        }
+                    </dd>
+
+                    <dt class="col-sm-4">Total Bookings:</dt>
+                    <dd class="col-sm-8">
+                        <span class="badge bg-success">@(Model.Bookings?.Count ?? 0) booking(s)</span>
+                    </dd>
+
+                    <dt class="col-sm-4">Total Reviews:</dt>
+                    <dd class="col-sm-8">
+                        <span class="badge bg-warning">@(Model.Reviews?.Count ?? 0) review(s)</span>
+                    </dd>
+                </dl>
+
+                @if ((Model.Bookings?.Count ?? 0) > 0 || (Model.Reviews?.Count ?? 0) > 0)
+                {
+                    <div class="alert alert-danger">
+                        <strong><i class="fas fa-exclamation-triangle me-2"></i>Warning:</strong> 
+                        This member has 
+                        @if ((Model.Bookings?.Count ?? 0) > 0)
+                        {
+                            <strong>@Model.Bookings.Count booking(s)</strong>
+                        }
+                        @if ((Model.Bookings?.Count ?? 0) > 0 && (Model.Reviews?.Count ?? 0) > 0)
+                        {
+                            <text> and </text>
+                        }
+                        @if ((Model.Reviews?.Count ?? 0) > 0)
+                        {
+                            <strong>@Model.Reviews.Count review(s)</strong>
+                        }
+                        . Deleting this member will also delete all their bookings and reviews!
+                    </div>
+                }
+
+                <form asp-action="DeleteMember" method="post">
+                    <input type="hidden" asp-for="MemberId" />
+                    <div class="d-grid gap-2 mt-4">
+                        <button type="submit" class="btn btn-danger btn-lg">
+                            <i class="fas fa-trash-alt me-2"></i>Yes, Delete This Member
+                        </button>
+                        <a asp-action="Members" class="btn btn-secondary btn-lg">
+                            <i class="fas fa-times me-2"></i>No, Keep This Member
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

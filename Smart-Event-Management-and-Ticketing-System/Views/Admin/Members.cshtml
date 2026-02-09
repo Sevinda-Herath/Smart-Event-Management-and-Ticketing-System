@@ -1,0 +1,95 @@
+@model List<Smart_Event_Management_and_Ticketing_System.Models.Member>
+@{
+    ViewData["Title"] = "All Members";
+}
+
+<div class="row mb-4">
+    <div class="col-md-12">
+        <h2>
+            <i class="fas fa-users me-2"></i>All Members
+        </h2>
+        <p class="text-muted">View all registered members</p>
+    </div>
+</div>
+
+<div class="card shadow">
+    <div class="card-header bg-info text-white">
+        <h5 class="mb-0">
+            <i class="fas fa-list me-2"></i>Member List (@Model.Count)
+        </h5>
+    </div>
+    <div class="card-body">
+        @if (Model != null && Model.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Preferred Category</th>
+                            <th>Bookings</th>
+                            <th>Reviews</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var member in Model)
+                        {
+                            <tr>
+                                <td><strong>@member.MemberId</strong></td>
+                                <td>
+                                    <i class="fas fa-user me-1 text-primary"></i>
+                                    @member.FullName
+                                </td>
+                                <td>
+                                    <i class="fas fa-envelope me-1 text-info"></i>
+                                    @member.Email
+                                </td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(member.PreferredCategory))
+                                    {
+                                        <span class="badge bg-primary">@member.PreferredCategory</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">-</span>
+                                    }
+                                </td>
+                                <td>
+                                    <span class="badge bg-success">@(member.Bookings?.Count ?? 0)</span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-warning">@(member.Reviews?.Count ?? 0)</span>
+                                </td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <a asp-action="Bookings" asp-route-memberId="@member.MemberId" 
+                                           class="btn btn-sm btn-info" title="View Member Bookings">
+                                            <i class="fas fa-ticket-alt"></i>
+                                        </a>
+                                        <a asp-action="EditMember" asp-route-id="@member.MemberId" 
+                                           class="btn btn-sm btn-warning" title="Edit Member">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a asp-action="DeleteMember" asp-route-id="@member.MemberId" 
+                                           class="btn btn-sm btn-danger" title="Delete Member">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle me-2"></i>No members registered yet.
+            </div>
+        }
+    </div>
+</div>

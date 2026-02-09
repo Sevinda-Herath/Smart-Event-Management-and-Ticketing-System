@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="~/Smart_Event_Management_and_Ticketing_System.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100">
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-primary border-bottom box-shadow mb-3">
             <div class="container-fluid">
@@ -28,21 +28,47 @@
                                 <i class="fas fa-home me-1"></i>Home
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white" asp-controller="Events" asp-action="Index">
-                                <i class="fas fa-calendar-check me-1"></i>Browse Events
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white" asp-controller="Inquiries" asp-action="Create">
-                                <i class="fas fa-envelope me-1"></i>Contact Us
-                            </a>
-                        </li>
-                        @if (ViewBag.IsLoggedIn == true)
+                        @if (ViewBag.IsAdmin != true)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-white" asp-controller="Events" asp-action="Index">
+                                    <i class="fas fa-calendar-check me-1"></i>Browse Events
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" asp-controller="Inquiries" asp-action="Create">
+                                    <i class="fas fa-envelope me-1"></i>Contact Us
+                                </a>
+                            </li>
+                        }
+                        @if (ViewBag.IsLoggedIn == true && ViewBag.IsAdmin != true)
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-white" asp-controller="Bookings" asp-action="Index">
                                     <i class="fas fa-ticket-alt me-1"></i>My Bookings
+                                </a>
+                            </li>
+                        }
+                        @if (ViewBag.IsAdmin == true)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-white" asp-controller="Admin" asp-action="Index">
+                                    <i class="fas fa-tachometer-alt me-1"></i>Dashboard
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" asp-controller="Admin" asp-action="Events">
+                                    <i class="fas fa-calendar-alt me-1"></i>Manage Events
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" asp-controller="Admin" asp-action="Bookings">
+                                    <i class="fas fa-ticket-alt me-1"></i>All Bookings
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" asp-controller="Admin" asp-action="Inquiries">
+                                    <i class="fas fa-envelope me-1"></i>Inquiries
                                 </a>
                             </li>
                         }
@@ -52,7 +78,11 @@
                         {
                             <li class="nav-item">
                                 <span class="nav-link text-white">
-                                    <i class="fas fa-user me-1"></i>Welcome, @ViewBag.MemberName
+                                    <i class="fas fa-user me-1"></i>@ViewBag.MemberName
+                                    @if (ViewBag.IsAdmin == true)
+                                    {
+                                        <span class="badge bg-warning text-dark ms-1">ADMIN</span>
+                                    }
                                 </span>
                             </li>
                             <li class="nav-item">
@@ -79,7 +109,7 @@
             </div>
         </nav>
     </header>
-    <div class="container">
+    <div class="container flex-fill">
         @if (TempData["SuccessMessage"] != null)
         {
             <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
@@ -99,7 +129,7 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted bg-light mt-5">
+    <footer class="border-top footer text-muted bg-light mt-auto">
         <div class="container py-3">
             <div class="row">
                 <div class="col-md-6">

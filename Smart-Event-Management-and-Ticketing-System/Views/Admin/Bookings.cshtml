@@ -1,0 +1,162 @@
+@model List<Smart_Event_Management_and_Ticketing_System.Models.Booking>
+@{
+    ViewData["Title"] = "All Bookings";
+}
+
+<div class="row mb-4">
+    <div class="col-md-12">
+        <h2>
+            <i class="fas fa-ticket-alt me-2"></i>All Bookings
+        </h2>
+        <p class="text-muted">View and manage all ticket bookings with member details</p>
+    </div>
+</div>
+
+<!-- Filter Section -->
+<div class="card mb-4 shadow-sm">
+    <div class="card-header bg-primary text-white">
+        <i class="fas fa-filter me-2"></i>Filter Bookings
+    </div>
+    <div class="card-body">
+        <form asp-action="Bookings" method="get">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="eventId" class="form-label">Event</label>
+                    <select name="eventId" id="eventId" class="form-control">
+                        <option value="">All Events</option>
+                        @foreach (var evt in ViewBag.Events)
+                        {
+                            <option value="@evt.EventId">@evt.EventName</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="memberId" class="form-label">Member</label>
+                    <select name="memberId" id="memberId" class="form-control">
+                        <option value="">All Members</option>
+                        @foreach (var member in ViewBag.Members)
+                        {
+                            <option value="@member.MemberId">@member.FullName</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-2 mb-3">
+                    <label class="form-label d-block">&nbsp;</label>
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-search me-2"></i>Filter
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@if (!string.IsNullOrEmpty(ViewBag.FilteredEventName))
+{
+    <div class="alert alert-info">
+        Showing bookings for event: <strong>@ViewBag.FilteredEventName</strong>
+    </div>
+}
+
+@if (!string.IsNullOrEmpty(ViewBag.FilteredMemberName))
+{
+    <div class="alert alert-info">
+        Showing bookings for member: <strong>@ViewBag.FilteredMemberName</strong>
+    </div>
+}
+
+<!-- Bookings Table -->
+<div class="card shadow">
+    <div class="card-header bg-success text-white">
+        <h5 class="mb-0">
+            <i class="fas fa-list me-2"></i>Booking List (@Model.Count)
+        </h5>
+    </div>
+    <div class="card-body">
+        @if (Model != null && Model.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-hover table-striped">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Booking ID</th>
+                            <th>Member Name</th>
+                            <th>Member Email</th>
+                            <th>Event Name</th>
+                            <th>Event Date</th>
+                            <th>Seat Type</th>
+                            <th>Quantity</th>
+                            <th>Booking Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var booking in Model)
+                        {
+                            <tr>
+                                <td><strong>#@booking.BookingId</strong></td>
+                                <td>
+                                    <i class="fas fa-user me-1 text-primary"></i>
+                                    @booking.Member?.FullName
+                                </td>
+                                <td>
+                                    <i class="fas fa-envelope me-1 text-info"></i>
+                                    @booking.Member?.Email
+                                </td>
+                                <td>@booking.Event?.EventName</td>
+                                <td>
+                                    <i class="fas fa-calendar me-1"></i>
+                                    @booking.Event?.EventDate.ToString("MMM dd, yyyy")
+                                </td>
+                                <td>
+                                    <span class="badge bg-primary">@booking.SeatType</span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-success">@booking.Quantity</span>
+                                </td>
+                                <td>@booking.BookingDate.ToString("MMM dd, yyyy")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle me-2"></i>No bookings found.
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Summary Statistics -->
+@if (Model != null && Model.Any())
+{
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card shadow">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-chart-bar me-2"></i>Summary Statistics
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h6>Total Bookings:</h6>
+                            <h3>@Model.Count</h3>
+                        </div>
+                        <div class="col-md-4">
+                            <h6>Total Tickets:</h6>
+                            <h3>@Model.Sum(b => b.Quantity)</h3>
+                        </div>
+                        <div class="col-md-4">
+                            <h6>Unique Members:</h6>
+                            <h3>@Model.Select(b => b.MemberId).Distinct().Count()</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

@@ -97,9 +97,15 @@ namespace Smart_Event_Management_and_Ticketing_System.Controllers
             }
 
             // Set session data for authenticated member
-            SessionHelper.SetMemberSession(HttpContext.Session, member.MemberId, member.FullName, member.Email);
+            SessionHelper.SetMemberSession(HttpContext.Session, member.MemberId, member.FullName, member.Email, member.Role);
 
             TempData["SuccessMessage"] = $"Welcome back, {member.FullName}!";
+
+            // Redirect admins to admin dashboard, members to home page
+            if (member.Role == "Admin")
+            {
+                return RedirectToAction("Index", "Admin");
+            }
 
             // Redirect to return URL or home page
             if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))

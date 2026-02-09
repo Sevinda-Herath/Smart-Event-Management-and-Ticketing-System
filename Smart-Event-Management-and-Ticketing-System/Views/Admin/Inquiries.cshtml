@@ -1,0 +1,54 @@
+@model List<Smart_Event_Management_and_Ticketing_System.Models.Inquiry>
+@{
+    ViewData["Title"] = "All Inquiries";
+}
+
+<div class="row mb-4">
+    <div class="col-md-12">
+        <h2>
+            <i class="fas fa-envelope me-2"></i>All Inquiries
+        </h2>
+        <p class="text-muted">View all contact messages and inquiries</p>
+    </div>
+</div>
+
+<div class="card shadow">
+    <div class="card-header bg-warning">
+        <h5 class="mb-0">
+            <i class="fas fa-list me-2"></i>Inquiry List (@Model.Count)
+        </h5>
+    </div>
+    <div class="card-body">
+        @if (Model != null && Model.Any())
+        {
+            @foreach (var inquiry in Model)
+            {
+                <div class="card mb-3 border-warning">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong><i class="fas fa-user me-2"></i>@inquiry.Name</strong>
+                                <span class="ms-3">
+                                    <i class="fas fa-envelope me-1"></i>@inquiry.Email
+                                </span>
+                            </div>
+                            <small class="text-muted">
+                                <i class="fas fa-calendar me-1"></i>
+                                @inquiry.InquiryDate.ToString("MMM dd, yyyy hh:mm tt")
+                            </small>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p class="mb-0">@inquiry.Message</p>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle me-2"></i>No inquiries yet.
+            </div>
+        }
+    </div>
+</div>
