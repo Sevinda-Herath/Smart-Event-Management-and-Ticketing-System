@@ -48,8 +48,9 @@ namespace Smart_Event_Management_and_Ticketing_System.Controllers
                     return View(member);
                 }
 
-                // In a real application, you should hash the password
-                // For coursework simplicity, we'll store it directly (NOT recommended for production)
+                // Hash the password before saving
+                member.Password = PasswordHasher.HashPassword(member.Password);
+                
                 _context.Members.Add(member);
                 await _context.SaveChangesAsync();
 
@@ -85,11 +86,11 @@ namespace Smart_Event_Management_and_Ticketing_System.Controllers
                 return View();
             }
 
-            // Find member by email and password
+            // Find member by email
             var member = await _context.Members
-                .FirstOrDefaultAsync(m => m.Email == email && m.Password == password);
+                .FirstOrDefaultAsync(m => m.Email == email);
 
-            if (member == null)
+            if (member == null || !PasswordHasher.VerifyPassword(password, member.Password))
             {
                 ModelState.AddModelError("", "Invalid email or password.");
                 ViewBag.ReturnUrl = returnUrl;

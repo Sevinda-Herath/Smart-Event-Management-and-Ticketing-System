@@ -316,7 +316,7 @@ namespace Smart_Event_Management_and_Ticketing_System.Controllers
         /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditMember(int id, Member member)
+        public async Task<IActionResult> EditMember(int id, Member member, string? NewPassword)
         {
             if (id != member.MemberId)
             {
@@ -325,6 +325,19 @@ namespace Smart_Event_Management_and_Ticketing_System.Controllers
 
             // Ensure role stays as Member (prevent privilege escalation)
             member.Role = "Member";
+
+            // If a new password is provided, hash it
+            if (!string.IsNullOrEmpty(NewPassword))
+            {
+                if (NewPassword.Length < 6)
+                {
+                    ModelState.AddModelError("NewPassword", "Password must be at least 6 characters.");
+                    SetViewBagData();
+                    return View(member);
+                }
+                member.Password = PasswordHasher.HashPassword(NewPassword);
+            }
+            // Otherwise, keep the existing password hash (already in member.Password from hidden field)
 
             if (ModelState.IsValid)
             {

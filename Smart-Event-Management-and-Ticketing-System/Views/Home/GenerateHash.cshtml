@@ -1,0 +1,92 @@
+@{
+    ViewData["Title"] = "Generate Password Hash";
+}
+
+<div class="row justify-content-center mt-5">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h3 class="mb-0">
+                    <i class="fas fa-key me-2"></i>Password Hash Generator
+                </h3>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <strong>TEMPORARY UTILITY:</strong> Remove this page after initial setup!
+                </div>
+
+                <h5>Generated Hash for Admin Password</h5>
+                <hr />
+
+                <div class="mb-3">
+                    <label class="form-label"><strong>Original Password:</strong></label>
+                    <div class="alert alert-info">
+                        <code>@ViewBag.Password</code>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label"><strong>Hashed Password (Copy this):</strong></label>
+                    <textarea class="form-control" rows="3" readonly id="hashedPassword">@ViewBag.Hash</textarea>
+                    <button class="btn btn-sm btn-primary mt-2" onclick="copyHash()">
+                        <i class="fas fa-copy me-1"></i>Copy to Clipboard
+                    </button>
+                </div>
+
+                <hr />
+
+                <h5>Next Steps:</h5>
+                <ol>
+                    <li>Copy the hashed password above</li>
+                    <li>Open SQL Server Management Studio</li>
+                    <li>Run this SQL script:</li>
+                </ol>
+
+                <pre class="bg-dark text-light p-3 rounded"><code>-- Delete all users
+DELETE FROM Reviews;
+DELETE FROM Bookings;
+DELETE FROM Inquiries;
+DELETE FROM Members;
+DBCC CHECKIDENT ('Members', RESEED, 0);
+
+-- Add admin with hashed password
+INSERT INTO Members (FullName, Email, Password, PreferredCategory, Role)
+VALUES (
+    'Administrator',
+    'admin@culturalcouncil.org',
+    '@ViewBag.Hash',
+    NULL,
+    'Admin'
+);</code></pre>
+
+                <div class="alert alert-success mt-3">
+                    <h6><i class="fas fa-check-circle me-2"></i>OR Use the Automatic Reset:</h6>
+                    <p class="mb-0">
+                        <a href="@Url.Action("ResetDatabase", "Home")" class="btn btn-success">
+                            <i class="fas fa-sync me-2"></i>Automatically Reset Database & Add Admin
+                        </a>
+                    </p>
+                </div>
+
+                <div class="mt-4">
+                    <a href="@Url.Action("Index", "Home")" class="btn btn-secondary">
+                        <i class="fas fa-home me-2"></i>Back to Home
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function copyHash() {
+            var copyText = document.getElementById("hashedPassword");
+            copyText.select();
+            copyText.setSelectionRange(0, 99999);
+            navigator.clipboard.writeText(copyText.value);
+            alert("Hash copied to clipboard!");
+        }
+    </script>
+}

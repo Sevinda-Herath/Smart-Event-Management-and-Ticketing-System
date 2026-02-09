@@ -51,6 +51,64 @@ namespace Smart_Event_Management_and_Ticketing_System.Controllers
         }
 
         /// <summary>
+        /// TEMPORARY UTILITY: Generate password hash for admin setup
+        /// Remove this method after initial setup!
+        /// Access at: /Home/GenerateHash
+        /// </summary>
+        public IActionResult GenerateHash()
+        {
+            string adminPassword = "admin123";
+            string hashedPassword = PasswordHasher.HashPassword(adminPassword);
+            
+            ViewBag.Hash = hashedPassword;
+            ViewBag.Password = adminPassword;
+            
+            return View();
+        }
+
+        /// <summary>
+        /// TEMPORARY UTILITY: Reset database and add admin with hashed password
+        /// Remove this method after initial setup!
+        /// Access at: /Home/ResetDatabase
+        /// </summary>
+        public async Task<IActionResult> ResetDatabase()
+        {
+            try
+            {
+                // Delete all data
+                _context.Reviews.RemoveRange(_context.Reviews);
+                _context.Bookings.RemoveRange(_context.Bookings);
+                _context.Inquiries.RemoveRange(_context.Inquiries);
+                _context.Members.RemoveRange(_context.Members);
+                await _context.SaveChangesAsync();
+
+                // Add admin with hashed password
+                var admin = new Member
+                {
+                    FullName = "Administrator",
+                    Email = "admin@culturalcouncil.org",
+                    Password = PasswordHasher.HashPassword("admin123"),
+                    Role = "Admin",
+                    PreferredCategory = null
+                };
+                _context.Members.Add(admin);
+                await _context.SaveChangesAsync();
+
+                ViewBag.Success = true;
+                ViewBag.Message = "Database reset successfully! Admin user created with hashed password.";
+                ViewBag.Email = "admin@culturalcouncil.org";
+                ViewBag.Password = "admin123";
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Success = false;
+                ViewBag.Message = $"Error: {ex.Message}";
+            }
+
+            return View();
+        }
+
+        /// <summary>
         /// Error handling page
         /// </summary>
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

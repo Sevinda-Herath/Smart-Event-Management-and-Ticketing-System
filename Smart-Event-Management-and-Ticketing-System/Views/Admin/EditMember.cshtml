@@ -22,7 +22,7 @@
             <div class="card-body">
                 <div class="alert alert-info">
                     <i class="fas fa-info-circle me-2"></i>
-                    <strong>Note:</strong> Editing a member's email or password will affect their login credentials.
+                    <strong>Note:</strong> Leave password field empty to keep current password. Enter a new password to change it.
                 </div>
 
                 <form asp-action="EditMember" method="post">
@@ -30,6 +30,7 @@
                     
                     <input type="hidden" asp-for="MemberId" />
                     <input type="hidden" asp-for="Role" />
+                    <input type="hidden" asp-for="Password" id="currentPasswordHash" />
 
                     <div class="form-group mb-3">
                         <label asp-for="FullName" class="form-label">
@@ -49,12 +50,11 @@
                     </div>
 
                     <div class="form-group mb-3">
-                        <label asp-for="Password" class="form-label">
-                            <i class="fas fa-lock me-1"></i>Password
+                        <label for="NewPassword" class="form-label">
+                            <i class="fas fa-lock me-1"></i>New Password (Optional)
                         </label>
-                        <input asp-for="Password" type="text" class="form-control" />
-                        <span asp-validation-for="Password" class="text-danger"></span>
-                        <small class="form-text text-muted">Minimum 6 characters</small>
+                        <input type="password" name="NewPassword" id="NewPassword" class="form-control" placeholder="Leave empty to keep current password" />
+                        <small class="form-text text-muted">Enter a new password only if you want to change it (Minimum 6 characters)</small>
                     </div>
 
                     <div class="form-group mb-3">
