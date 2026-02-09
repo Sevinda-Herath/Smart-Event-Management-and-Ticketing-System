@@ -21,14 +21,24 @@ namespace Smart_Event_Management_and_Ticketing_System.Controllers
             _context = context;
         }
 
+        /// <summary>
+        /// Helper method to set ViewBag values for all booking views
+        /// </summary>
+        private void SetViewBagData()
+        {
+            ViewBag.IsLoggedIn = SessionHelper.IsLoggedIn(HttpContext.Session);
+            ViewBag.MemberName = SessionHelper.GetMemberName(HttpContext.Session);
+            ViewBag.IsAdmin = SessionHelper.IsAdmin(HttpContext.Session);
+        }
+
         // GET: Bookings
         /// <summary>
         /// Display all bookings for the logged-in member
         /// </summary>
         public async Task<IActionResult> Index()
         {
+            SetViewBagData();
             var memberId = SessionHelper.GetMemberId(HttpContext.Session);
-            ViewBag.MemberName = SessionHelper.GetMemberName(HttpContext.Session);
 
             var bookings = await _context.Bookings
                 .Include(b => b.Event)
@@ -59,7 +69,7 @@ namespace Smart_Event_Management_and_Ticketing_System.Controllers
                 return NotFound();
             }
 
-            ViewBag.MemberName = SessionHelper.GetMemberName(HttpContext.Session);
+            SetViewBagData();
             ViewBag.Event = eventItem;
             ViewBag.AvailableSeats = eventItem.AvailableSeats;
 
@@ -106,7 +116,7 @@ namespace Smart_Event_Management_and_Ticketing_System.Controllers
             if (eventItem.AvailableSeats < booking.Quantity)
             {
                 ModelState.AddModelError("Quantity", $"Only {eventItem.AvailableSeats} seats available.");
-                ViewBag.MemberName = SessionHelper.GetMemberName(HttpContext.Session);
+                SetViewBagData();
                 ViewBag.Event = eventItem;
                 ViewBag.AvailableSeats = eventItem.AvailableSeats;
                 return View(booking);
@@ -121,7 +131,7 @@ namespace Smart_Event_Management_and_Ticketing_System.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewBag.MemberName = SessionHelper.GetMemberName(HttpContext.Session);
+            SetViewBagData();
             ViewBag.Event = eventItem;
             ViewBag.AvailableSeats = eventItem.AvailableSeats;
             return View(booking);
@@ -149,7 +159,7 @@ namespace Smart_Event_Management_and_Ticketing_System.Controllers
                 return NotFound();
             }
 
-            ViewBag.MemberName = SessionHelper.GetMemberName(HttpContext.Session);
+            SetViewBagData();
             return View(booking);
         }
 
@@ -174,7 +184,7 @@ namespace Smart_Event_Management_and_Ticketing_System.Controllers
                 return NotFound();
             }
 
-            ViewBag.MemberName = SessionHelper.GetMemberName(HttpContext.Session);
+            SetViewBagData();
             return View(booking);
         }
 
