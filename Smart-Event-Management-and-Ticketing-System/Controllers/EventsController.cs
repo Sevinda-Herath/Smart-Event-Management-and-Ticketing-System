@@ -84,7 +84,7 @@ namespace Smart_Event_Management_and_Ticketing_System.Controllers
         /// Display detailed information about a specific event
         /// Members see full details, guests see limited information
         /// </summary>
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int? id, int? starFilter, string? reviewKeyword)
         {
             if (id == null)
             {
@@ -118,6 +118,33 @@ namespace Smart_Event_Management_and_Ticketing_System.Controllers
                 var hasReviewed = await _context.Reviews
                     .AnyAsync(r => r.MemberId == memberId && r.EventId == id);
                 ViewBag.HasReviewed = hasReviewed;
+            }
+
+            // Filter reviews
+            var filteredReviews = eventItem.Reviews.AsEnumerable();
+
+            if (starFilter.HasValue && starFilter.Value >= 1 && starFilter.Value <= 5)
+            {
+                filteredReviews = filteredReviews.Where(r => r.Rating == starFilter.Value);
+                ViewBag.StarFilter = starFilter.Value;
+            }
+
+            if (!string.IsNullOrEmpty(reviewKeyword))
+            {
+                filteredReviews = filteredReviews.Where(r => 
+                    r.Comment.Contains(reviewKeyword, StringComparison.OrdinalIgnoreCase) ||
+                    r.Member.FullName.Contains(reviewKeyword, StringComparison.OrdinalIgnoreCase));
+                ViewBag.ReviewKeyword = reviewKeyword;
+            }
+
+            ViewBag.FilteredReviews = filteredReviews.OrderByDescending(r => r.ReviewDate).ToList();
+            ViewBag.TotalReviews = eventItem.Reviews?.Count ?? 0;
+            ViewBag.FilteredReviewCount = filteredReviews.Count();
+
+            // Calculate average rating
+            if (eventItem.Reviews != null && eventItem.Reviews.Any())
+            {
+                ViewBag.AverageRating = eventItem.Reviews.Average(r => r.Rating);
             }
 
             return View(eventItem);

@@ -130,18 +130,78 @@
         <div class="card shadow-sm">
             <div class="card-header bg-info text-white">
                 <h5 class="mb-0">
-                    <i class="fas fa-star me-2"></i>Reviews (@Model.Reviews?.Count ?? 0)
+                    <i class="fas fa-star me-2"></i>Reviews (@ViewBag.TotalReviews)
                 </h5>
-            </div>
-            <div class="card-body" style="max-height: 600px; overflow-y: auto;">
-                @if (Model.Reviews != null && Model.Reviews.Any())
+                @if (ViewBag.AverageRating != null)
                 {
-                    foreach (var review in Model.Reviews.OrderByDescending(r => r.ReviewDate))
+                    <small>Average Rating: @ViewBag.AverageRating.ToString("0.0") <i class="fas fa-star"></i></small>
+                }
+            </div>
+            
+            <!-- Review Filter Section -->
+            <div class="card-body bg-light border-bottom">
+                <form asp-action="Details" asp-route-id="@Model.EventId" method="get">
+                    <div class="mb-2">
+                        <label for="starFilter" class="form-label small mb-1">
+                            <i class="fas fa-filter me-1"></i>Filter by Stars
+                        </label>
+                        <select name="starFilter" id="starFilter" class="form-select form-select-sm">
+                            <option value="">All Ratings</option>
+                            <option value="5" selected="@(ViewBag.StarFilter == 5)">5 Stars</option>
+                            <option value="4" selected="@(ViewBag.StarFilter == 4)">4 Stars</option>
+                            <option value="3" selected="@(ViewBag.StarFilter == 3)">3 Stars</option>
+                            <option value="2" selected="@(ViewBag.StarFilter == 2)">2 Stars</option>
+                            <option value="1" selected="@(ViewBag.StarFilter == 1)">1 Star</option>
+                        </select>
+                    </div>
+                    <div class="mb-2">
+                        <label for="reviewKeyword" class="form-label small mb-1">
+                            <i class="fas fa-search me-1"></i>Search Reviews
+                        </label>
+                        <input type="text" name="reviewKeyword" id="reviewKeyword" class="form-control form-control-sm" 
+                               placeholder="Search by keyword or name" value="@ViewBag.ReviewKeyword" />
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-sm">
+                            <i class="fas fa-filter me-1"></i>Filter
+                        </button>
+                        @if (ViewBag.StarFilter != null || ViewBag.ReviewKeyword != null)
+                        {
+                            <a asp-action="Details" asp-route-id="@Model.EventId" class="btn btn-outline-secondary btn-sm">
+                                <i class="fas fa-times me-1"></i>Clear Filters
+                            </a>
+                        }
+                    </div>
+                </form>
+            </div>
+
+            <!-- Filtered Review Count -->
+            @if (ViewBag.StarFilter != null || ViewBag.ReviewKeyword != null)
+            {
+                <div class="card-body bg-warning bg-opacity-25 py-2 border-bottom">
+                    <small class="text-muted">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Showing @ViewBag.FilteredReviewCount of @ViewBag.TotalReviews reviews
+                    </small>
+                </div>
+            }
+
+            <!-- Reviews List -->
+            <div class="card-body" style="max-height: 600px; overflow-y: auto;">
+                @if (ViewBag.FilteredReviews != null && ViewBag.FilteredReviews.Count > 0)
+                {
+                    var currentMemberId = ViewBag.IsLoggedIn == true ? Smart_Event_Management_and_Ticketing_System.Helpers.SessionHelper.GetMemberId(Context.Session) : null;
+                    
+                    foreach (var review in ViewBag.FilteredReviews)
                     {
                         <div class="mb-3 pb-3 border-bottom">
                             <div class="d-flex justify-content-between align-items-start">
                                 <div>
                                     <strong>@review.Member?.FullName</strong>
+                                    @if (currentMemberId.HasValue && review.MemberId == currentMemberId.Value)
+                                    {
+                                        <span class="badge bg-primary ms-1">You</span>
+                                    }
                                     <div>
                                         @for (int i = 1; i <= 5; i++)
                                         {
@@ -156,13 +216,34 @@
                                         }
                                     </div>
                                 </div>
-                                <small class="text-muted">@review.ReviewDate.ToString("MMM dd, yyyy")</small>
+                                <div class="text-end">
+                                    <small class="text-muted d-block">@review.ReviewDate.ToString("MMM dd, yyyy")</small>
+                                    @if (currentMemberId.HasValue && review.MemberId == currentMemberId.Value)
+                                    {
+                                        <div class="btn-group btn-group-sm mt-1" role="group">
+                                            <a asp-controller="Reviews" asp-action="Edit" asp-route-id="@review.ReviewId" 
+                                               class="btn btn-sm btn-outline-primary" title="Edit your review">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <a asp-controller="Reviews" asp-action="Delete" asp-route-id="@review.ReviewId" 
+                                               class="btn btn-sm btn-outline-danger" title="Delete your review">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
+                                        </div>
+                                    }
+                                </div>
                             </div>
                             <p class="mt-2 mb-0">@review.Comment</p>
                         </div>
                     }
                 }
-                else
+                else if (ViewBag.StarFilter != null || ViewBag.ReviewKeyword != null)
+                {
+                    <p class="text-muted">
+                        <i class="fas fa-search me-2"></i>No reviews match your filter criteria.
+                    </p>
+                }
+                else if (Model.Reviews == null || !Model.Reviews.Any())
                 {
                     <p class="text-muted">
                         <i class="fas fa-info-circle me-2"></i>No reviews yet. Be the first to review this event!

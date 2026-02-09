@@ -195,5 +195,59 @@ namespace Smart_Event_Management_and_Ticketing_System.Controllers
             ViewBag.Event = eventItem;
             return View(review);
         }
+
+        // GET: Reviews/Delete/5
+        /// <summary>
+        /// Display confirmation page for review deletion
+        /// Only the review author can delete their review
+        /// </summary>
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var memberId = SessionHelper.GetMemberId(HttpContext.Session);
+            var review = await _context.Reviews
+                .Include(r => r.Event)
+                .Include(r => r.Member)
+                .FirstOrDefaultAsync(r => r.ReviewId == id && r.MemberId == memberId);
+
+            if (review == null)
+            {
+                TempData["ErrorMessage"] = "Review not found or you don't have permission to delete it.";
+                return RedirectToAction("Index", "Events");
+            }
+
+            ViewBag.MemberName = SessionHelper.GetMemberName(HttpContext.Session);
+            return View(review);
+        }
+
+        // POST: Reviews/Delete/5
+        /// <summary>
+        /// Process review deletion
+        /// </summary>
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var memberId = SessionHelper.GetMemberId(HttpContext.Session);
+            var review = await _context.Reviews
+                .FirstOrDefaultAsync(r => r.ReviewId == id && r.MemberId == memberId);
+
+            if (review == null)
+            {
+                TempData["ErrorMessage"] = "Review not found or you don't have permission to delete it.";
+                return RedirectToAction("Index", "Events");
+            }
+
+            var eventId = review.EventId;
+            _context.Reviews.Remove(review);
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "Your review has been deleted successfully.";
+            return RedirectToAction("Details", "Events", new { id = eventId });
+        }
     }
 }
