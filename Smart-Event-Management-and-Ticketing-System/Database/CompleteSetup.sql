@@ -38,7 +38,7 @@ CREATE TABLE Members (
     MemberId INT IDENTITY(1,1) PRIMARY KEY,
     FullName NVARCHAR(100) NOT NULL,
     Email NVARCHAR(100) NOT NULL UNIQUE,
-    Password NVARCHAR(500) NOT NULL, -- Stores hashed password
+    Password NVARCHAR(100) NOT NULL, -- Stores plain text password for coursework
     PreferredCategory NVARCHAR(50) NULL,
     Role NVARCHAR(20) NOT NULL DEFAULT 'Member', -- 'Member' or 'Admin'
     CONSTRAINT CK_Members_Email CHECK (Email LIKE '%@%'),
@@ -122,90 +122,54 @@ PRINT 'Table Inquiries created.';
 GO
 
 -- =====================================================
--- SECTION 3: Indexes for Performance
+-- SECTION 4: Indexes for Performance
 -- =====================================================
 
 -- Index on Member Email for faster login queries
-CREATE NONCLUSTERED INDEX IX_Members_Email ON Members(Email);
+CREATE NONCLUSTERED INDEX IX_Members_Email ON EVENT_MGMT.Members(Email);
 GO
 
 -- Index on Event Date for event listing queries
-CREATE NONCLUSTERED INDEX IX_Events_EventDate ON Events(EventDate);
+CREATE NONCLUSTERED INDEX IX_Events_EventDate ON EVENT_MGMT.Events(EventDate);
 GO
 
 -- Index on Booking Date for booking history queries
-CREATE NONCLUSTERED INDEX IX_Bookings_BookingDate ON Bookings(BookingDate DESC);
+CREATE NONCLUSTERED INDEX IX_Bookings_BookingDate ON EVENT_MGMT.Bookings(BookingDate DESC);
 GO
 
 -- Index on Review Date for recent reviews
-CREATE NONCLUSTERED INDEX IX_Reviews_ReviewDate ON Reviews(ReviewDate DESC);
+CREATE NONCLUSTERED INDEX IX_Reviews_ReviewDate ON EVENT_MGMT.Reviews(ReviewDate DESC);
 GO
 
 -- Composite index for member bookings
-CREATE NONCLUSTERED INDEX IX_Bookings_MemberId_EventId ON Bookings(MemberId, EventId);
+CREATE NONCLUSTERED INDEX IX_Bookings_MemberId_EventId ON EVENT_MGMT.Bookings(MemberId, EventId);
 GO
 
 -- Composite index for member reviews
-CREATE NONCLUSTERED INDEX IX_Reviews_MemberId_EventId ON Reviews(MemberId, EventId);
+CREATE NONCLUSTERED INDEX IX_Reviews_MemberId_EventId ON EVENT_MGMT.Reviews(MemberId, EventId);
 GO
 
 PRINT 'Indexes created successfully.';
 GO
 
 -- =====================================================
--- SECTION 4: Initial Data - Admin User
+-- SECTION 5: Initial Data - Admin User
 -- =====================================================
 
--- IMPORTANT: Password hashing must be done programmatically
--- The password 'admin123' needs to be hashed using PasswordHasher.HashPassword()
--- 
--- Two options to add admin user:
--- Option 1: Use the web interface at /Home/ResetDatabase (Recommended)
--- Option 2: Generate hash programmatically and insert here
---
--- For initial setup, run the application and navigate to:
--- https://localhost:7227/Home/ResetDatabase
--- This will automatically create the admin user with a properly hashed password.
-
-PRINT '';
-PRINT '=====================================================';
-PRINT 'ADMIN USER SETUP REQUIRED';
-PRINT '=====================================================';
-PRINT 'The admin user must be created with a hashed password.';
-PRINT '';
-PRINT 'METHOD 1 (Recommended):';
-PRINT '  1. Start the application';
-PRINT '  2. Navigate to: https://localhost:7227/Home/ResetDatabase';
-PRINT '  3. Admin user will be created automatically';
-PRINT '';
-PRINT 'METHOD 2 (Manual):';
-PRINT '  1. Navigate to: https://localhost:7227/Home/GenerateHash';
-PRINT '  2. Copy the generated hash';
-PRINT '  3. Run the following SQL with the hash:';
-PRINT '';
-PRINT '  INSERT INTO Members (FullName, Email, Password, PreferredCategory, Role)';
-PRINT '  VALUES (''Administrator'', ''admin@culturalcouncil.org'', ''YOUR_HASH_HERE'', NULL, ''Admin'');';
-PRINT '';
-PRINT 'Default Admin Credentials:';
-PRINT '  Email: admin@culturalcouncil.org';
-PRINT '  Password: admin123';
-PRINT '=====================================================';
-PRINT '';
-
--- Temporary placeholder for admin user (will be replaced by hashed version)
--- UNCOMMENT AND REPLACE WITH ACTUAL HASH AFTER GENERATION:
-/*
-INSERT INTO Members (FullName, Email, Password, PreferredCategory, Role)
+-- Add admin user with plain text password (for coursework simplicity)
+INSERT INTO EVENT_MGMT.Members (FullName, Email, Password, PreferredCategory, Role)
 VALUES (
     'Administrator',
     'admin@culturalcouncil.org',
-    'PASTE_GENERATED_HASH_HERE',
+    'admin123',
     NULL,
     'Admin'
 );
-PRINT 'Admin user created successfully.';
+
+PRINT 'Admin user created successfully with plain text password.';
+PRINT 'Email: admin@culturalcouncil.org';
+PRINT 'Password: admin123';
 GO
-*/
 
 -- =====================================================
 -- SECTION 5: Sample Data (Optional)
@@ -214,7 +178,7 @@ GO
 -- Sample Events
 -- Uncomment to add sample events for testing
 
-/*
+
 INSERT INTO Events (EventName, Category, EventDate, Venue, Description, Price, TotalSeats)
 VALUES 
     ('Summer Music Festival', 'Music', '2025-07-15 19:00:00', 'Central Park Amphitheater', 'A celebration of summer with live music from local and international artists.', 45.00, 500),
@@ -227,7 +191,7 @@ VALUES
 
 PRINT 'Sample events inserted.';
 GO
-*/
+
 
 -- =====================================================
 -- SECTION 6: Verification Queries
@@ -277,6 +241,7 @@ SELECT
 FROM sys.indexes i
 WHERE OBJECT_NAME(i.object_id) IN ('Members', 'Events', 'Bookings', 'Reviews', 'Inquiries')
   AND i.name IS NOT NULL
+  AND OBJECT_SCHEMA_NAME(i.object_id) = 'EVENT_MGMT'
 ORDER BY TableName, IndexName;
 GO
 
@@ -285,7 +250,7 @@ GO
 -- =====================================================
 
 -- Stored procedure to reset database (useful for testing)
-CREATE PROCEDURE sp_ResetDatabase
+CREATE PROCEDURE EVENT_MGMT.sp_ResetDatabase
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -294,26 +259,26 @@ BEGIN
         BEGIN TRANSACTION;
         
         -- Disable foreign key constraints explicitly
-        ALTER TABLE Reviews NOCHECK CONSTRAINT ALL;
-        ALTER TABLE Bookings NOCHECK CONSTRAINT ALL;
+        ALTER TABLE EVENT_MGMT.Reviews NOCHECK CONSTRAINT ALL;
+        ALTER TABLE EVENT_MGMT.Bookings NOCHECK CONSTRAINT ALL;
         
         -- Delete all data in proper order (respecting dependencies)
-        DELETE FROM Reviews;
-        DELETE FROM Bookings;
-        DELETE FROM Inquiries;
-        DELETE FROM Events;
-        DELETE FROM Members;
+        DELETE FROM EVENT_MGMT.Reviews;
+        DELETE FROM EVENT_MGMT.Bookings;
+        DELETE FROM EVENT_MGMT.Inquiries;
+        DELETE FROM EVENT_MGMT.Events;
+        DELETE FROM EVENT_MGMT.Members;
         
         -- Reset identity seeds
-        DBCC CHECKIDENT ('Reviews', RESEED, 0);
-        DBCC CHECKIDENT ('Bookings', RESEED, 0);
-        DBCC CHECKIDENT ('Inquiries', RESEED, 0);
-        DBCC CHECKIDENT ('Events', RESEED, 0);
-        DBCC CHECKIDENT ('Members', RESEED, 0);
+        DBCC CHECKIDENT ('EVENT_MGMT.Reviews', RESEED, 0);
+        DBCC CHECKIDENT ('EVENT_MGMT.Bookings', RESEED, 0);
+        DBCC CHECKIDENT ('EVENT_MGMT.Inquiries', RESEED, 0);
+        DBCC CHECKIDENT ('EVENT_MGMT.Events', RESEED, 0);
+        DBCC CHECKIDENT ('EVENT_MGMT.Members', RESEED, 0);
         
         -- Re-enable foreign key constraints
-        ALTER TABLE Reviews WITH CHECK CHECK CONSTRAINT ALL;
-        ALTER TABLE Bookings WITH CHECK CHECK CONSTRAINT ALL;
+        ALTER TABLE EVENT_MGMT.Reviews WITH CHECK CHECK CONSTRAINT ALL;
+        ALTER TABLE EVENT_MGMT.Bookings WITH CHECK CHECK CONSTRAINT ALL;
         
         COMMIT TRANSACTION;
         
@@ -332,7 +297,7 @@ BEGIN
 END;
 GO
 
-PRINT 'Stored procedure sp_ResetDatabase created.';
+PRINT 'Stored procedure EVENT_MGMT.sp_ResetDatabase created.';
 GO
 
 -- =====================================================
@@ -340,7 +305,7 @@ GO
 -- =====================================================
 
 -- Create view for member statistics
-CREATE VIEW vw_MemberStatistics AS
+CREATE VIEW EVENT_MGMT.vw_MemberStatistics AS
 SELECT 
     m.MemberId,
     m.FullName,
@@ -350,17 +315,17 @@ SELECT
     ISNULL(SUM(b.Quantity), 0) AS TotalTickets,
     COUNT(DISTINCT r.ReviewId) AS TotalReviews,
     AVG(CAST(r.Rating AS FLOAT)) AS AverageRatingGiven
-FROM Members m
-LEFT JOIN Bookings b ON m.MemberId = b.MemberId
-LEFT JOIN Reviews r ON m.MemberId = r.MemberId
+FROM EVENT_MGMT.Members m
+LEFT JOIN EVENT_MGMT.Bookings b ON m.MemberId = b.MemberId
+LEFT JOIN EVENT_MGMT.Reviews r ON m.MemberId = r.MemberId
 GROUP BY m.MemberId, m.FullName, m.Email, m.Role;
 GO
 
-PRINT 'View vw_MemberStatistics created.';
+PRINT 'View EVENT_MGMT.vw_MemberStatistics created.';
 GO
 
 -- Create view for event statistics
-CREATE VIEW vw_EventStatistics AS
+CREATE VIEW EVENT_MGMT.vw_EventStatistics AS
 SELECT 
     e.EventId,
     e.EventName,
@@ -378,13 +343,13 @@ SELECT
     COUNT(DISTINCT b.BookingId) AS TotalBookings,
     COUNT(DISTINCT r.ReviewId) AS TotalReviews,
     AVG(CAST(r.Rating AS FLOAT)) AS AverageRating
-FROM Events e
-LEFT JOIN Bookings b ON e.EventId = b.EventId
-LEFT JOIN Reviews r ON e.EventId = r.EventId
+FROM EVENT_MGMT.Events e
+LEFT JOIN EVENT_MGMT.Bookings b ON e.EventId = b.EventId
+LEFT JOIN EVENT_MGMT.Reviews r ON e.EventId = r.EventId
 GROUP BY e.EventId, e.EventName, e.Category, e.EventDate, e.Venue, e.Price, e.TotalSeats;
 GO
 
-PRINT 'View vw_EventStatistics created.';
+PRINT 'View EVENT_MGMT.vw_EventStatistics created.';
 GO
 
 -- =====================================================
@@ -408,6 +373,7 @@ PRINT '=====================================================';
 PRINT '';
 PRINT 'Summary:';
 PRINT '  - Database: EventManagementDB';
+PRINT '  - Schema: EVENT_MGMT';
 PRINT '  - Tables Created: 5 (Members, Events, Bookings, Reviews, Inquiries)';
 PRINT '  - Indexes Created: 6';
 PRINT '  - Views Created: 2 (vw_MemberStatistics, vw_EventStatistics)';
@@ -421,12 +387,12 @@ PRINT '  4. Login with: admin@culturalcouncil.org / admin123';
 PRINT '  5. (Optional) Add sample events through the admin interface';
 PRINT '';
 PRINT 'Testing Procedures:';
-PRINT '  - To view member stats: SELECT * FROM vw_MemberStatistics;';
-PRINT '  - To view event stats: SELECT * FROM vw_EventStatistics;';
-PRINT '  - To reset database: EXEC sp_ResetDatabase;';
+PRINT '  - To view member stats: SELECT * FROM EVENT_MGMT.vw_MemberStatistics;';
+PRINT '  - To view event stats: SELECT * FROM EVENT_MGMT.vw_EventStatistics;';
+PRINT '  - To reset database: EXEC EVENT_MGMT.sp_ResetDatabase;';
 PRINT '';
 PRINT 'Connection String for appsettings.json:';
-PRINT '  "DefaultConnection": "Server=(localdb)\\mssqllocaldb;Database=EventManagementDB;Trusted_Connection=true;MultipleActiveResultSets=true"';
+PRINT '  "DefaultConnection": "Server=.\\SQLEXPRESS;Database=EventManagementDB;Trusted_Connection=True;TrustServerCertificate=True;"';
 PRINT '';
 PRINT '=====================================================';
 PRINT 'Setup completed successfully! ?';

@@ -26,6 +26,7 @@ namespace Smart_Event_Management_and_Ticketing_System.Models
         [Required(ErrorMessage = "Comment is required")]
         [StringLength(500, ErrorMessage = "Comment cannot exceed 500 characters")]
         [DataType(DataType.MultilineText)]
+        [Column("Review_Comment")]
         public string Comment { get; set; }
 
         [Required]

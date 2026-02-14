@@ -326,7 +326,7 @@ namespace Smart_Event_Management_and_Ticketing_System.Controllers
             // Ensure role stays as Member (prevent privilege escalation)
             member.Role = "Member";
 
-            // If a new password is provided, hash it
+            // If a new password is provided, use it (plain text)
             if (!string.IsNullOrEmpty(NewPassword))
             {
                 if (NewPassword.Length < 6)
@@ -335,9 +335,9 @@ namespace Smart_Event_Management_and_Ticketing_System.Controllers
                     SetViewBagData();
                     return View(member);
                 }
-                member.Password = PasswordHasher.HashPassword(NewPassword);
+                member.Password = NewPassword;
             }
-            // Otherwise, keep the existing password hash (already in member.Password from hidden field)
+            // Otherwise, keep the existing password (already in member.Password from hidden field)
 
             if (ModelState.IsValid)
             {

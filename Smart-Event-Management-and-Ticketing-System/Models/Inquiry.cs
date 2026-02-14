@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Smart_Event_Management_and_Ticketing_System.Models
 {
@@ -12,11 +13,13 @@ namespace Smart_Event_Management_and_Ticketing_System.Models
 
         [Required(ErrorMessage = "Name is required")]
         [StringLength(100)]
+        [Column("SenderName")]
         public string Name { get; set; }
 
         [Required(ErrorMessage = "Email is required")]
         [EmailAddress(ErrorMessage = "Invalid email address")]
         [StringLength(100)]
+        [Column("SenderEmail")]
         public string Email { get; set; }
 
         [Required(ErrorMessage = "Message is required")]

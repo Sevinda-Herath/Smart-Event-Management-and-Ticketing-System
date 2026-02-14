@@ -21,18 +21,21 @@ namespace Smart_Event_Management_and_Ticketing_System.Data
         public DbSet<Review> Reviews { get; set; }
         public DbSet<Inquiry> Inquiries { get; set; }
 
-        /// <summary>
-        /// Configure entity relationships and constraints
-        /// </summary>
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
+    /// <summary>
+    /// Configure entity relationships and constraints
+    /// </summary>
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
 
-            // Configure Member entity
-            modelBuilder.Entity<Member>(entity =>
-            {
-                entity.HasIndex(e => e.Email).IsUnique(); // Ensure unique emails
-            });
+        // Set default schema for all tables
+        modelBuilder.HasDefaultSchema("EVENT_MGMT");
+
+        // Configure Member entity
+        modelBuilder.Entity<Member>(entity =>
+        {
+            entity.HasIndex(e => e.Email).IsUnique(); // Ensure unique emails
+        });
 
             // Configure Event entity
             modelBuilder.Entity<Event>(entity =>
