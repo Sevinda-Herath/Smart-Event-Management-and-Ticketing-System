@@ -75,10 +75,7 @@ Login as admin to access the admin dashboard and management features.
    dotnet restore
    ```
 
-3. **Database is Already Created!**
-   - The database migration has already been applied
-   - Sample event data is seeded
-   - Admin user is created
+3. **Create the Database**
 
 4. **Run the Application**
    - Press `F5` in Visual Studio or run:
@@ -119,21 +116,6 @@ Login as admin to access the admin dashboard and management features.
 
 ---
 
-## How to Use
-
-### As a Guest (Not Logged In)
-1. Browse events from the home page (limited information)
-2. View event details and reviews
-3. Send inquiries via "Contact Us"
-4. Register to become a member
-
-### As a Member (Logged In)
-1. Click "Register" and create an account
-2. Login with your credentials
-3. Browse events with full details and pricing
-4. Book tickets for any available event
-5. View and manage your bookings under "My Bookings"
-6. Submit reviews for events you've attended
 
 ---
 
@@ -146,47 +128,6 @@ Views/          - Razor views for UI
 Data/           - ApplicationDbContext with EF Core
 Helpers/        - Session management utilities
 Filters/        - Custom authorization attribute
-```
-
----
-
-## Sample Seed Data
-
-6 pre-loaded events including:
-- Metropolitan Orchestra: Symphony Night
-- Contemporary Art Exhibition
-- Shakespeare's Hamlet
-- Jazz Night Live
-- Cultural Dance Festival
-- Photography Workshop
-
----
-
-## Technologies Used
-
-- ASP.NET Core MVC (.NET 10)
-- Entity Framework Core (Code-First)
-- SQL Server LocalDB
-- Bootstrap 5
-- Font Awesome Icons
-- Session-based Authentication
-
----
-
-## Important Notes
-
-?? **For Educational Purposes:** This project uses simplified authentication without password hashing for coursework demonstration.
-
-? **Well-Documented Code:** All classes and methods include comments explaining functionality.
-
----
-
-## Troubleshooting
-
-If you encounter database issues:
-```bash
-dotnet ef database drop
-dotnet ef database update
 ```
 
 ---
