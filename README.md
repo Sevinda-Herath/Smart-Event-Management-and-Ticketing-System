@@ -1,7 +1,7 @@
 # Smart Event Management and Ticketing System
 
 **University Coursework Project**  
-**Course:** Web Development / Software Engineering  
+**Course:** Web Development
 **Technology Stack:** ASP.NET Core MVC (.NET 10), Entity Framework Core, SQL Server LocalDB
 
 ---
@@ -19,32 +19,32 @@ The **Smart Event Management and Ticketing System** is a web application designe
 ## Features Implemented
 
 ### For Guests (Non-Logged In Users)
-? Browse events with limited information (Event Name, Category, Date, Venue)  
-? View event availability as "Available" or "Full"  
-? View reviews submitted by members  
-? Register as a new member  
-? Send inquiries/contact messages  
+- Browse events with limited information (Event Name, Category, Date, Venue)  
+- View event availability as "Available" or "Full"  
+- View reviews submitted by members  
+- Register as a new member  
+- Send inquiries/contact messages  
 
 ### For Members (Logged In Users)
-? Member registration with email validation  
-? Login/Logout with session-based authentication  
-? Browse all events with full details (including price and exact seat availability)  
-? Search and filter events by Category, Date, Location, Price  
-? Book tickets with seat type selection (Standard/VIP)  
-? View all personal bookings  
-? Cancel bookings  
-? Submit reviews for attended events (Rating 1-5 + Comment)  
-? Edit submitted reviews  
+- Member registration with email validation  
+- Login/Logout with session-based authentication  
+- Browse all events with full details (including price and exact seat availability)  
+- Search and filter events by Category, Date, Location, Price  
+- Book tickets with seat type selection (Standard/VIP)  
+- View all personal bookings  
+- Cancel bookings  
+- Submit reviews for attended events (Rating 1-5 + Comment)  
+- Edit submitted reviews  
 
 ### For Admins (Administrative Users)
-? Admin dashboard with system statistics  
-? Create new events with full details  
-? Edit existing events  
-? Delete events (with associated bookings and reviews)  
-? View all bookings with member details (name and email)  
-? Filter bookings by event or member  
-? View all inquiries/contact messages  
-? View all registered members with activity counts  
+- Admin dashboard with system statistics  
+- Create new events with full details  
+- Edit existing events  
+- Delete events (with associated bookings and reviews)  
+- View all bookings with member details (name and email)  
+- Filter bookings by event or member  
+- View all inquiries/contact messages  
+- View all registered members with activity counts  
 
 ---
 
