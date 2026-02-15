@@ -1,9 +1,9 @@
-using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Smart_Event_Management_and_Ticketing_System.Data;
-using Smart_Event_Management_and_Ticketing_System.Models;
 using Smart_Event_Management_and_Ticketing_System.Helpers;
+using Smart_Event_Management_and_Ticketing_System.Models;
+using System.Diagnostics;
 
 namespace Smart_Event_Management_and_Ticketing_System.Controllers
 {
