@@ -2,7 +2,7 @@
 
 **University Coursework Project**  
 **Course:** Web Development
-**Technology Stack:** ASP.NET Core MVC (.NET 10), Entity Framework Core, SQL Server LocalDB
+**Technology Stack:** ASP.NET Core MVC (.NET 10), Entity Framework Core, SQL Server
 
 ---
 
@@ -63,7 +63,7 @@ Login as admin to access the admin dashboard and management features.
 ### Prerequisites
 - Visual Studio 2026 (or Visual Studio 2022+)
 - .NET 10 SDK (or .NET 8+ SDK)
-- SQL Server Express LocalDB
+- SQL Server Express 
 
 ### Installation Steps
 
