@@ -24,8 +24,9 @@ namespace Smart_Event_Management_and_Ticketing_System.Controllers
         /// </summary>
         public async Task<IActionResult> Index()
         {
-            // Get upcoming events (next 6 events)
+            // Get upcoming events (next 6 events) with bookings to calculate available seats
             var upcomingEvents = await _context.Events
+                .Include(e => e.Bookings)
                 .Where(e => e.EventDate >= DateTime.Now)
                 .OrderBy(e => e.EventDate)
                 .Take(6)
