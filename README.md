@@ -112,8 +112,6 @@ Login as admin to access the admin dashboard and management features.
 5. **View Inquiries:** Read all contact form submissions
 6. **View Members:** See all registered users and their activity
 
-?? **For detailed admin instructions, see [ADMIN_GUIDE.md](ADMIN_GUIDE.md)**
-
 ---
 
 
